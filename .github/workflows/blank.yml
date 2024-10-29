@@ -1,4 +1,4 @@
-name: Create Directory on VM
+name: Create Directory on VM 
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   create-directory:
-    runs-on: ubuntu  # Changed to ubuntu-latest; 'ec2-user' is not a valid runner
+    runs-on: ubuntu-latest  # Changed to ubuntu-latest; 'ec2-user' is not a valid runner
 
     steps:
       - name: Checkout code
@@ -32,4 +32,4 @@ jobs:
           HOST: ${{ secrets.VM_HOST }}
           USER: ${{ secrets.VM_USER }}
         run: |
-          ssh -o StrictHostKeyChecking=no "$USER@$HOST" "mkdir -p /home/ec2-user"
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa "$USER@$HOST" "mkdir -p /home/ec2-user/new_directory"
