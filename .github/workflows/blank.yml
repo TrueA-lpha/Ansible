@@ -32,4 +32,4 @@ jobs:
           HOST: ${{ secrets.VM_HOST }}
           USER: ${{ secrets.VM_USER }}
         run: |
-          ssh -o StrictHostKeyChecking=no "$USER@$HOST" "mkdir -p /path/to/new/directory"
+          ssh -o StrictHostKeyChecking=no "$USER@$HOST" "mkdir -p /home/ec2-user"
