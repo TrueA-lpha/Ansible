@@ -1,0 +1,70 @@
+name: Create Directory on VM
+
+on:
+  push:
+    branches:
+      - main  # Trigger on push to main
+  pull_request:
+    branches:
+      - main  # Trigger on pull request to main
+
+jobs:
+  create-directory:
+    runs-on: ubuntu-latest  # Changed to ubuntu-latest; 'ec2-user' is not a valid runner
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        env:
+          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} 
+          HOST: ${{ secrets.VM_HOST }}                 
+          USER: ${{ secrets.VM_USER }}                 
+        run: |
+          mkdir -p ~/.ssh
+          echo "$PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          echo "StrictHostKeyChecking no" >> ~/.ssh/config
+
+      - name: Create directory on VM
+        env:
+          HOST: ${{ secrets.VM_HOST }}
+          USER: ${{ secrets.VM_USER }}
+        run: |
+          ssh -o StrictHostKeyChecking=no "$USER@$HOST" "mkdir -p /path/to/new/directory"
+name: Create Directory on VM
+
+on:
+  push:
+    branches:
+      - main  # Trigger on push to main
+  pull_request:
+    branches:
+      - main  # Trigger on pull request to main
+
+jobs:
+  create-directory:
+    runs-on: ubuntu-latest  # Changed to ubuntu-latest; 'ec2-user' is not a valid runner
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        env:
+          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} 
+          HOST: ${{ secrets.VM_HOST }}                 
+          USER: ${{ secrets.VM_USER }}                 
+        run: |
+          mkdir -p ~/.ssh
+          echo "$PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          echo "StrictHostKeyChecking no" >> ~/.ssh/config
+
+      - name: Create directory on VM
+        env:
+          HOST: ${{ secrets.VM_HOST }}
+          USER: ${{ secrets.VM_USER }}
+        run: |
+          ssh -o StrictHostKeyChecking=no "$USER@$HOST" "mkdir -p /path/to/new/directory"
