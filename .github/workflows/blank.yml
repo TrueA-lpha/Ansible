@@ -10,7 +10,7 @@ on:
 
 jobs:
   create-directory:
-    runs-on: ubuntu-latest  # Changed to ubuntu-latest; 'ec2-user' is not a valid runner
+    runs-on: ubuntu-latest  # Use GitHub's latest Ubuntu runner
 
     steps:
       - name: Checkout code
