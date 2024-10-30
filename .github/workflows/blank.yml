@@ -1,16 +1,16 @@
-name: Create Directory on VM 
+name: Update and Run Application on VM
 
 on:
   push:
     branches:
-      - main  # Trigger on push to main
+      - main  
   pull_request:
     branches:
-      - main  # Trigger on pull request to main
+      - main  
 
 jobs:
-  create-directory:
-    runs-on: ubuntu-latest  # Use GitHub's latest Ubuntu runner
+  update-and-run:
+    runs-on: ubuntu-latest  
 
     steps:
       - name: Checkout code
@@ -27,9 +27,26 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
-      - name: Create directory on VM
-        env:
-          HOST: ${{ secrets.VM_HOST }}
-          USER: ${{ secrets.VM_USER }}
+      - name: Pull Latest Changes and Manage Processes
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa "$USER@$HOST" "mkdir -p /home/ec2-user/file112"
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa "$USER@$HOST" << 'EOF'
+            # Pull the latest code
+            cd /home/ec2-user/ai-avatar  
+            git pull origin main  
+            
+            # Kill existing processes listening on port 3000
+            PIDs=$(sudo netstat -nlp | grep 3000 | awk '{print $7}' | cut -d'/' -f1)
+            if [ -n "$PIDs" ]; then
+              echo "Killing processes with PIDs: $PIDs"
+              sudo kill -9 $PIDs
+            else
+              echo "No processes found listening on port 3000"
+            fi
+            
+            # Install dependencies and run the application
+            npm run build  
+            
+            # Start the application in a detached screen session
+            screen -dmS myapp npm run dev
+          EOF
+
